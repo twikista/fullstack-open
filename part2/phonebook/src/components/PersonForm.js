@@ -22,7 +22,7 @@ const PersonForm = ({
       <div>
         name:{" "}
         <input
-          type="number"
+          type="text"
           onChange={phoneNumberHandler}
           value={newNumber}
           placeholder="Enter phone number"
