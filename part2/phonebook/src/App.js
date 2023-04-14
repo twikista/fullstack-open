@@ -3,12 +3,15 @@ import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   console.log(searchQuery);
   console.log(persons);
 
@@ -24,11 +27,23 @@ const App = () => {
       );
       if (confirm) {
         const updatedPerson = { ...personExists, number: newNumber };
-        personService.update(id, updatedPerson).then((returnedPerson) => {
-          setPersons(persons.map((i) => (i.id !== id ? i : returnedPerson)));
-          setNewName("");
-          setNewNumber("");
-        });
+        personService
+          .update(id, updatedPerson)
+          .then((returnedPerson) => {
+            setPersons(persons.map((i) => (i.id !== id ? i : returnedPerson)));
+            setNewName("");
+            setNewNumber("");
+            setSuccessMessage(`${returnedPerson.name} updated`);
+            setTimeout(() => setSuccessMessage(null), 5000);
+          })
+          .catch((error) => {
+            setErrorMessage(
+              `information of ${updatedPerson.name} has already been removed from server`
+            );
+            setTimeout(() => setErrorMessage(null), 5000);
+            setPersons(persons.filter((i) => i.id !== id));
+          });
+
         return;
       }
     }
@@ -41,8 +56,11 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
+      setSuccessMessage(`${returnedPerson.name} added`);
+      setTimeout(() => setSuccessMessage(null), 5000);
     });
   };
+
   const nameHandler = (e) => {
     setNewName(e.target.value);
   };
@@ -71,6 +89,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={successMessage ? successMessage : errorMessage}
+        type={successMessage ? "success" : "error"}
+      />
       <Filter searchHandler={searchHandler} searchQuery={searchQuery} />
 
       <h3>Add a new person</h3>
