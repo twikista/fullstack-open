@@ -53,10 +53,12 @@ const App = () => {
       number: newNumber,
     };
     personService.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
+      console.log(returnedPerson);
+      setPersons(returnedPerson);
+      console.log(returnedPerson);
       setNewName("");
       setNewNumber("");
-      setSuccessMessage(`${returnedPerson.name} added`);
+      setSuccessMessage(`${newPerson.name} added`);
       setTimeout(() => setSuccessMessage(null), 5000);
     });
   };
