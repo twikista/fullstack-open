@@ -1,12 +1,12 @@
 import React from "react";
 
-const Filter = ({ searchHandler, searchQuery }) => {
+const Filter = ({ setQuery, searchQuery }) => {
   return (
     <div>
       search:
       <input
         type="search"
-        onChange={searchHandler}
+        onChange={(e) => setQuery(e.target.value)}
         value={searchQuery}
         placeholder="search by name"
         name="search"

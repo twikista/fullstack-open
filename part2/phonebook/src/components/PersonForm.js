@@ -1,20 +1,24 @@
-import React from "react";
+import { useState } from "react";
 
-const PersonForm = ({
-  submitHandler,
-  nameHandler,
-  newName,
-  phoneNumberHandler,
-  newNumber,
-}) => {
+const PersonForm = ({ createPerson }) => {
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const newPerson = { name, number };
+    console.log(newPerson);
+    createPerson(newPerson);
+    setName("");
+    setNumber("");
+  };
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
   return (
     <form onSubmit={submitHandler}>
       <div>
         number:
         <input
           type="text"
-          onChange={nameHandler}
-          value={newName}
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           placeholder="Enter name"
           name="name"
         />
@@ -23,8 +27,8 @@ const PersonForm = ({
         name:{" "}
         <input
           type="text"
-          onChange={phoneNumberHandler}
-          value={newNumber}
+          onChange={(e) => setNumber(e.target.value)}
+          value={number}
           placeholder="Enter phone number"
           name="phonenumber"
         />

@@ -7,32 +7,26 @@ import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  console.log(searchQuery);
-  console.log(persons);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (!newName) return;
+  const createPerson = (newPerson) => {
+    const { name, number } = newPerson;
+    if (!name) return;
 
-    const personExists = persons.find((i) => i.name === newName);
+    const personExists = persons.find((i) => i.name === name);
     if (personExists) {
       const { id, name } = personExists;
       const confirm = window.confirm(
         `${name} is already added to phonebook, replace the old number with a new one?`
       );
       if (confirm) {
-        const updatedPerson = { ...personExists, number: newNumber };
+        const updatedPerson = { ...personExists, number: number };
         personService
           .update(id, updatedPerson)
           .then((returnedPerson) => {
             setPersons(persons.map((i) => (i.id !== id ? i : returnedPerson)));
-            setNewName("");
-            setNewNumber("");
             setSuccessMessage(`${returnedPerson.name} updated`);
             setTimeout(() => setSuccessMessage(null), 5000);
           })
@@ -48,30 +42,11 @@ const App = () => {
       }
     }
 
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
     personService.create(newPerson).then((returnedPerson) => {
-      console.log(returnedPerson);
-      setPersons(returnedPerson);
-      console.log(returnedPerson);
-      setNewName("");
-      setNewNumber("");
+      setPersons(persons.concat(returnedPerson));
       setSuccessMessage(`${newPerson.name} added`);
       setTimeout(() => setSuccessMessage(null), 5000);
     });
-  };
-
-  const nameHandler = (e) => {
-    setNewName(e.target.value);
-  };
-  const phoneNumberHandler = (e) => {
-    setNewNumber(e.target.value);
-  };
-
-  const searchHandler = (e) => {
-    setSearchQuery(e.target.value);
   };
 
   useEffect(() => {
@@ -95,17 +70,10 @@ const App = () => {
         message={successMessage ? successMessage : errorMessage}
         type={successMessage ? "success" : "error"}
       />
-      <Filter searchHandler={searchHandler} searchQuery={searchQuery} />
+      <Filter setQuery={setSearchQuery} searchQuery={searchQuery} />
 
       <h3>Add a new person</h3>
-      <PersonForm
-        submitHandler={submitHandler}
-        nameHandler={nameHandler}
-        newName={newName}
-        phoneNumberHandler={phoneNumberHandler}
-        newNumber={newNumber}
-      />
-
+      <PersonForm createPerson={createPerson} />
       <h3>Numbers</h3>
       <Persons
         persons={persons}
