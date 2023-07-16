@@ -4,7 +4,7 @@ import filterReducer from './filterReducer'
 describe('filter reducer', () => {
   test('filters can be added', () => {
     const action = {
-      type: 'SET_FILTER',
+      type: 'filter/filterAnecdote',
       payload: 'code',
     }
     const state = ''

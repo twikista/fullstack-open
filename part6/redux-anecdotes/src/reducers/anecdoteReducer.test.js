@@ -1,4 +1,4 @@
-import reducer from './anecdoteReducer'
+import anecdoteReducer from './anecdoteReducer'
 import deepFreeze from 'deep-freeze'
 
 describe('anecdote reducer', () => {
@@ -10,11 +10,15 @@ describe('anecdote reducer', () => {
     },
   ]
   test('vote is incremented', () => {
-    const action = { type: 'VOTE', payload: 1234 }
+    const action = {
+      type: 'anecdotes/voteAnecdote',
+      payload: 1234,
+    }
     const state = initialState
-    deepFreeze(state)
 
-    const newState = reducer(state, action)
+    deepFreeze(state)
+    const newState = anecdoteReducer(state, action)
+
     expect(newState).toContainEqual({
       content: 'Big things come in small packages',
       id: 1234,
@@ -29,13 +33,13 @@ describe('anecdote reducer', () => {
       votes: 0,
     }
     const action = {
-      type: 'NEW ANECDOTE',
+      type: 'anecdotes/createAnecdote',
       payload: newAnecdote,
     }
     const state = initialState
     deepFreeze(state)
 
-    const newState = reducer(state, action)
+    const newState = anecdoteReducer(state, action)
 
     expect(newState).toHaveLength(2)
     expect(newState).toContainEqual(newAnecdote)
