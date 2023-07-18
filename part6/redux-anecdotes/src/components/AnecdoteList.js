@@ -3,8 +3,8 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { notification } from '../util/util'
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(({ anecdotes }) => anecdotes)
-  const filter = useSelector(({ filter }) => filter)
+  const { anecdotes, filter } = useSelector((state) => state)
+  console.log(anecdotes)
   const dispatch = useDispatch()
   const vote = (id, content) => {
     dispatch(voteAnecdote(id))
