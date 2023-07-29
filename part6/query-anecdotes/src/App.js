@@ -2,9 +2,12 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { getAll, incrementVote } from './services.js/anecdoteService'
+import AnecdotesList from './components/AnecdotesList'
+import { useNotificationContext } from './components/NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const [, notificationDispatch] = useNotificationContext()
 
   const {
     data: anecdotes,
@@ -21,6 +24,14 @@ const App = () => {
         i.id !== newAnecdote.id ? i : newAnecdote
       )
       queryClient.setQueryData('anecdotes', updatedAnecdotes)
+      notificationDispatch({
+        type: 'VOTE_INCREMENTED',
+        payload: `anecdote '${newAnecdote.content}' voted`,
+      })
+      setTimeout(
+        () => notificationDispatch({ type: 'CLEAR_NOTIFICATION' }),
+        5 * 1000
+      )
     },
   })
 
@@ -42,16 +53,7 @@ const App = () => {
 
       <Notification />
       <AnecdoteForm />
-
-      {anecdotes.map((anecdote) => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote)}>vote</button>
-          </div>
-        </div>
-      ))}
+      <AnecdotesList anecdotes={anecdotes} handleVote={handleVote} />
     </div>
   )
 }
